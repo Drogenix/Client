@@ -1,0 +1,164 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="1000"        
+        WindowStyle="None"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
+    <Window.Resources>
+        <RoutedUICommand x:Key="CreateCardCommand" Text="Create"/>
+        <RoutedUICommand x:Key="EditEnabledCommand" Text="Edit"/>
+        <RoutedUICommand x:Key="DeleteCardCommand" Text="Create"/>
+        <RoutedUICommand x:Key="EditSaveCommand" Text="EditEnable"/>
+    </Window.Resources>
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource CreateCardCommand}" Executed="Create"/>
+        <CommandBinding Command="{StaticResource EditEnabledCommand}" Executed="EditEnable"/>
+        <CommandBinding Command="{StaticResource DeleteCardCommand}" Executed="Delete"/>
+    </Window.CommandBindings>
+    
+    <Border CornerRadius="6" Background="#FFF2FDFF">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <!--Hat-->
+            <Border MouseLeftButtonDown="Border_MouseLeftButtonDown"  Grid.Row="0" Background="Gainsboro" CornerRadius="6 6 0 0">
+                <Grid>
+                    <TextBlock Text="Created by Ilya Yaroshevich"
+                               FontSize="16"
+                               Foreground="#FF213C91"
+                               FontFamily="Calibri Light"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" FontWeight="SemiBold"></TextBlock>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="_" Padding="0 0 0 6" Style="{DynamicResource WindowControlsButtonsStyle}"
+                                Click="ButtonMinimize_Click"/>
+                        <Button Content="☐" Style="{DynamicResource WindowControlsButtonsStyle}"
+                                Click="ButtonMaximized_Click"/>
+                        <Button 
+                                Content="🗙"
+                                Foreground="Red"
+                                Click="ButtonClose_Click">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="Height" Value="35" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                    <Setter Property="FontSize" Value="14" />
+                                    <Setter Property="Width" Value="40" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontFamily" Value="Calibri" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Padding" Value="1"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="border" CornerRadius="0 6 0 0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                                                    <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" 
+                                          RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                        <Setter Property="BorderThickness" Value="1.5" TargetName="border"/>
+                                                        <Setter Property="BorderBrush" Value="Gray" TargetName="border"/>
+                                                        <Setter Property="Background" Value="#FF213C91" TargetName="border"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsPressed" Value="true">
+                                                        <Setter Property="Background" Value="#FF205AAB" TargetName="border"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <ListView BorderBrush="Gainsboro" x:Name="ListView" SelectedIndex="0" ItemsSource="{Binding Path = Cards}" SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" 
+                      Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="730"
+                      Background="Transparent">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Margin" Value="10" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border Height="240" Width="220" Background="Transparent" BorderThickness="2" BorderBrush="#FF213C91"
+                            CornerRadius="0 0 15 15">
+                                        <Grid Background="Transparent">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="200"/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Border x:Name="Image" Visibility="Visible" Grid.Row="0" Background="Transparent">
+                                                <Image Source="{Binding PictureUrl}" Stretch="Uniform"/>
+                                            </Border>
+                                            <Grid x:Name="Menu" Visibility="Visible" Grid.Row="1">
+                                                <TextBlock x:Name="Title" Grid.Row="1" Width="70" Background="Transparent" Text="{Binding Info, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       FontSize="14"
+                                       TextAlignment="Center"
+                                       FontFamily="Calibri"
+                                       FontWeight="SemiBold"
+                                       Foreground="Black"/>
+                                                <Button x:Name="Edit" Command="{StaticResource EditEnabledCommand}" Grid.Row="1" Foreground="Green" Margin="5 0 0 0" Content="Edit" Height="40" Width="40" HorizontalAlignment="Left"
+                                    VerticalAlignment="Center" FontWeight="Bold" Style="{DynamicResource CrudButtonsStyle}">
+                                                </Button>
+                                                <Button x:Name="Delete" Command="{StaticResource DeleteCardCommand}" Grid.Row="1" Margin="0 0 5 0" Content="Delete" Height="40" Width="40" HorizontalAlignment="Right" 
+                                    VerticalAlignment="Center" FontWeight="Bold" Style="{DynamicResource CrudButtonsStyle}"></Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="IsSelected" Value="True"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+
+            <!--Edit Panel-->
+            <Grid x:Name="EditPanel" IsEnabled="False" Grid.Row="1" Margin="0 20 30 0" Height="120"  Width="200" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <TextBlock Margin="0 5 0 0" FontSize="20" Text="Edit" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                <TextBox x:Name="EditTextb" Background="Gainsboro" Width="100" BorderBrush="Black" MaxLength="40" Height="30" />
+                <Button Click="Edit" x:Name="Save" Content="Save" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="30" Width="60"/>
+                <Button x:Name="Cancel" Content="Cancel" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="30" Width="60"/>
+            </Grid>
+
+            <!--Create Panel-->
+            <Grid Grid.Row="1" Margin="0,198,30,0" Height="275"  Width="200" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <TextBlock Margin="0 5 0 0" FontSize="20" Text="Create" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                <TextBlock Margin="0,127,0,0" FontSize="20" Text="2. Info" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                <TextBlock Margin="0,60,0,0" FontSize="20" Text="1. PictureUrl" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                <TextBox x:Name="InfoTb" Background="Gainsboro" Width="100" BorderBrush="Black" MaxLength="40" Height="30" Margin="50,121,50,49" />
+                <TextBox x:Name="PictureUrlTb" Background="Gainsboro" Width="100" BorderBrush="Black" MaxLength="40" Height="30" Margin="50,57,50,113"/>
+                <Button x:Name="CreateButton" Command="{StaticResource CreateCardCommand}" Content="Create" VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="30" Width="100"/>
+            </Grid>
+            <Button x:Name="GetDataButton" Click="GetDataButton_Click" Content="GetData" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="30" Width="100" Margin="820,0,0,10" Grid.Row="1"/>
+
+        </Grid>
+    </Border>
+
+</Window>
